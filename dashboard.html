@@ -4,107 +4,80 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="refresh" content="300">
-<title>Market Overview | Terminal</title>
-<!-- Font professionali: Inter per il testo, JetBrains Mono per i numeri -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<title>Market Overview | Wealth Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-:root{
-  /* Palette Istituzionale: Grigi freddi, blu notte, verde bosco, bordeaux */
-  --bg:#f8fafc; --card:#ffffff; --text:#0f172a; --t2:#475569; --t3:#94a3b8;
-  --b:#e2e8f0; --up:#047857; --dn:#be123c; --ac:#1e40af;
-  --sh:rgba(15,23,42,.04); --grid: rgba(148, 163, 184, 0.2);
+:root {
+  --bg: #f8f9fa; --card: #ffffff; --text: #1e1e1e; --t2: #6b7280; --b: #e5e7eb;
+  --ac: #1e3a8a; --up: #15803d; --dn: #b91c1c; --grid: #f3f4f6;
 }
-[data-theme="dark"]{
-  /* Tema Dark Terminal */
-  --bg:#09090b; --card:#121214; --text:#f4f4f5; --t2:#a1a1aa; --t3:#52525b;
-  --b:#27272a; --up:#10b981; --dn:#e11d48; --ac:#3b82f6; --sh:rgba(0,0,0,.5); --grid: rgba(63, 63, 70, 0.5);
-}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#09090b;--card:#121214;--text:#f4f4f5;--t2:#a1a1aa;--t3:#52525b;--b:#27272a;--up:#10b981;--dn:#e11d48;--ac:#3b82f6;--sh:rgba(0,0,0,.5);--grid: rgba(63, 63, 70, 0.5);}}
-
 *{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family: 'Inter', -apple-system, sans-serif;
-  background:var(--bg); color:var(--text); padding:24px 32px;
-  transition:background .3s,color .3s; -webkit-font-smoothing: antialiased;
-}
+body{font-family: 'Inter', sans-serif;background: var(--bg); color: var(--text); padding: 30px 40px;}
 
-/* HEADER DA TERMINALE */
-.tb{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;border-bottom:1px solid var(--b);padding-bottom:16px}
-.tb h1{font-size:20px;font-weight:600;letter-spacing:-.3px}
-.tb p{font-size:12px;color:var(--t2);margin-top:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.tb{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:30px;border-bottom:2px solid var(--ac);padding-bottom:15px;flex-wrap:wrap;gap:12px}
+.tb h1{font-family: 'Playfair Display', serif; font-size:32px;font-weight:600;color:var(--ac);letter-spacing:-0.5px}
+.tb p{font-size:11px;color:var(--t2);margin-top:6px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px}
 .tr{display:flex;align-items:center;gap:16px}
-.ut{font-size:12px;color:var(--t2);font-family:'JetBrains Mono', monospace;font-weight:500;background:var(--card);padding:6px 12px;border-radius:4px;border:1px solid var(--b)}
-.tt{background:var(--card);border:1px solid var(--b);color:var(--t2);padding:6px 14px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
-.tt:hover{border-color:var(--ac);color:var(--text)}
+.ut{font-size:11px;color:var(--t2);font-weight:600;text-transform:uppercase;letter-spacing:1px}
 
-/* TABS */
-.tabs{display:flex;gap:4px;margin-bottom:24px;flex-wrap:wrap;border-bottom:1px solid var(--b)}
-.tab{padding:10px 16px;cursor:pointer;font-size:13px;font-weight:600;color:var(--t2);background:transparent;border:none;border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px}
+.tabs{display:flex;gap:24px;margin-bottom:30px;flex-wrap:wrap;border-bottom:1px solid var(--b)}
+.tab{padding:10px 0;cursor:pointer;font-size:13px;font-weight:600;color:var(--t2);background:transparent;border:none;border-bottom:2px solid transparent;transition:all .2s;text-transform:uppercase;letter-spacing:1px;}
 .tab:hover{color:var(--text)}
 .tab.a{color:var(--ac);border-bottom:2px solid var(--ac)}
 .sec{display:none}
-.sec.a{display:block; animation:fadeIn .3s ease}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.sec.a{display:block}
 
-/* GRID UNIFORME */
-.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-
-/* CARD FINANZIARIE */
-.c{background:var(--card);border-radius:6px;padding:16px 20px;border:1px solid var(--b);transition:border-color .2s, box-shadow .2s;position:relative}
-.c:hover{border-color:var(--t3);box-shadow:0 4px 12px var(--sh)}
-.n{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
-.p{font-family:'JetBrains Mono', monospace;font-size:24px;font-weight:600;line-height:1.1;color:var(--text);letter-spacing:-.5px}
-.r{display:flex;align-items:baseline;gap:10px;margin-top:6px}
-.ch{font-family:'JetBrains Mono', monospace;font-size:12px;font-weight:600}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px}
+.c{background:var(--card);padding:20px 24px;border-radius:6px;border:1px solid var(--b);transition:transform .2s;position:relative;box-shadow: 0 2px 6px rgba(0,0,0,0.02);}
+.c:hover{transform:translateY(-2px);box-shadow: 0 4px 12px rgba(0,0,0,0.05);}
+.n{font-size:12px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.p{font-family: 'Playfair Display', serif;font-size:30px;color:var(--text);line-height:1.1;letter-spacing:-0.5px}
+.r{display:flex;align-items:baseline;gap:10px;margin-top:10px}
+.ch{font-size:13px;font-weight:600;letter-spacing:.5px}
 .up{color:var(--up)}.dn{color:var(--dn)}
-.bm{display:inline-block;font-size:9px;background:var(--t3);color:#fff;padding:1px 4px;border-radius:2px;font-weight:600;letter-spacing:.5px}
+.bm{display:inline-block;font-size:9px;background:var(--t2);color:#fff;padding:2px 6px;border-radius:2px;font-weight:600;letter-spacing:1px}
 
-/* SPARKLINE PULITA (Senza griglia, solo trend) */
-.cw{width:100%;height:40px;margin-top:14px;position:relative}
+.cw{width:100%;height:50px;margin-top:20px;position:relative}
 .cw svg{width:100%;height:100%;display:block;overflow:visible}
 
-/* SEZIONE STORICI */
-.h2{font-size:16px;font-weight:600;margin:40px 0 20px;letter-spacing:-.3px;border-bottom:1px solid var(--b);padding-bottom:10px}
-.lc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(450px,1fr));gap:20px}
-.lc-card{background:var(--card);border-radius:6px;padding:20px;border:1px solid var(--b);cursor:pointer;transition:all .2s}
-.lc-card:hover{border-color:var(--ac)}
-.lc-card h3{font-size:14px;font-weight:600;margin-bottom:16px;color:var(--text);display:flex;justify-content:space-between;align-items:center}
-.lc-card .open-hint{font-size:11px;color:var(--ac);font-weight:500;opacity:0;transition:opacity .2s}
+.h2{font-family: 'Playfair Display', serif;font-size:24px;font-weight:600;color:var(--ac);margin:50px 0 24px;letter-spacing:-0.5px;border-bottom:1px solid var(--b);padding-bottom:10px}
+.lc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(450px,1fr));gap:30px}
+.lc-card{background:var(--card);padding:24px;border:1px solid var(--b);cursor:pointer;transition:all .2s;box-shadow: 0 2px 8px rgba(0,0,0,0.02);border-radius:6px;}
+.lc-card:hover{box-shadow: 0 4px 12px rgba(0,0,0,0.06);border-color:#d1d5db}
+.lc-card h3{font-family: 'Playfair Display', serif;font-size:20px;font-weight:600;color:var(--text);display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.lc-card .open-hint{font-family: 'Inter', sans-serif;font-size:10px;color:var(--ac);font-weight:600;text-transform:uppercase;letter-spacing:1px;opacity:0;transition:opacity .2s}
 .lc-card:hover .open-hint{opacity:1}
-.lc-card svg{width:100%;height:180px;display:block}
-.lc-card .info{display:flex;justify-content:space-between;margin-top:12px;font-size:11px;color:var(--t2);font-family:'JetBrains Mono', monospace}
-.lc-card .info span{color:var(--text);font-weight:600}
+.chart-container-large { position: relative; width: 100%; height: 250px; }
+.lc-card .info{display:flex;justify-content:space-between;margin-top:16px;font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.lc-card .info span{color:var(--text);font-family: 'Playfair Display', serif;font-size:15px;letter-spacing:0; font-weight:600;}
 
-/* MODAL E TABELLA (Stile Report) */
-.modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(9,9,11,.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px}
+.modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(255,255,255,0.95);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px}
 .modal.active{display:flex}
-.modal-content{background:var(--card);border:1px solid var(--b);border-radius:8px;padding:24px 32px;width:100%;max-width:1100px;max-height:90vh;overflow:auto;position:relative;box-shadow:0 24px 48px rgba(0,0,0,.3);animation:zoomIn .2s ease both}
-@keyframes zoomIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
-.modal-close{position:absolute;top:16px;right:20px;font-size:24px;cursor:pointer;color:var(--t2);line-height:1;transition:color .2s}
-.modal-close:hover{color:var(--dn)}
-.modal h2{font-size:20px;font-weight:600;margin-bottom:4px}
-.modal-sub{font-size:13px;color:var(--t2);margin-bottom:24px;font-weight:500}
-.modal-chart-wrap{position:relative;width:100%;height:400px;margin-bottom:24px}
+.modal-content{background:var(--card);padding:40px;width:100%;max-width:1100px;max-height:90vh;overflow:auto;position:relative;box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid var(--b); border-radius: 8px;}
+.modal-close{position:absolute;top:20px;right:24px;font-size:32px;cursor:pointer;color:var(--t2);line-height:1;transition:color .2s; font-family: 'Inter', sans-serif}
+.modal-close:hover{color:var(--text)}
+.modal h2{font-family: 'Playfair Display', serif;font-size:28px;font-weight:600;color:var(--ac);margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--t2);margin-bottom:30px;font-weight:500;text-transform:uppercase;letter-spacing:1px;}
+.modal-chart-wrap{position:relative;width:100%;height:450px;margin-bottom:30px}
 
-.data-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:16px}
-.data-table th,.data-table td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--b);font-family:'JetBrains Mono', monospace;}
-.data-table th:first-child,.data-table td:first-child{text-align:left;font-family:'Inter', sans-serif;}
-.data-table th{color:var(--t2);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.05em;background:var(--bg)}
-.data-table td{font-weight:500}
-.data-table tr:hover td{background:var(--bg)}
-.ft{margin-top:40px;font-size:11px;color:var(--t3);text-align:center;border-top:1px solid var(--b);padding-top:20px}
+.data-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:20px}
+.data-table th,.data-table td{padding:14px 12px;text-align:right;border-bottom:1px solid var(--b)}
+.data-table th:first-child,.data-table td:first-child{text-align:left;}
+.data-table th{color:var(--t2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:1px;background:var(--bg)}
+.data-table td{font-weight:500;font-family: 'Playfair Display', serif; font-size:16px;}
+.data-table td:first-child{font-family: 'Inter', sans-serif; font-size:13px; font-weight:600;}
+.ft{margin-top:40px;font-size:11px;color:var(--t2);text-align:center;border-top:1px solid var(--b);padding-top:20px;text-transform:uppercase;letter-spacing:1px}
 </style>
 </head>
 <body>
 <div class="tb">
   <div>
     <h1>Market Overview</h1>
-    <p>Asset Allocation · Global Markets · Macro Trends</p>
+    <p>Asset Allocation &middot; Global Markets &middot; Macro Trends</p>
   </div>
   <div class="tr">
-    <span class="ut" id="ut">Loading data...</span>
-    <button class="tt" onclick="tog()">Theme</button>
+    <span class="ut" id="ut">Caricamento dati in corso...</span>
   </div>
 </div>
 
@@ -138,29 +111,46 @@ body{
   </div>
 </div>
 
-<div class="ft">Data provided by Yahoo Finance · Updates every 30 minutes</div>
+<div class="ft">Data provided by Yahoo Finance &middot; Updates every 30 minutes</div>
 
 <script>
 let D = {};
 let L = {};
 let myChart = null;
+const chartInstances = [];
 
-// 1. SPARKLINE PULITA (Niente griglia o testi, solo trend)
+function getYLimits(mn, mx) {
+  const padding = (mx - mn) * 0.1; 
+  return { min: Math.max(0, mn - padding), max: mx + padding };
+}
+
 function sparkline(cd, mn, mx) {
-  const w = 240, h = 40, px = 2, n = cd.length;
+  if (!cd || !Array.isArray(cd) || cd.length === 0) return "";
+  const w = 240, h = 50, px = 2, n = cd.length;
   const r = mx - mn || 1;
   let pts = "";
+  let area = "";
   
   cd.forEach((c, i) => {
     const x = px + (i / (n - 1)) * (w - px * 2);
     const y = h - ((c[3] - mn) / r) * (h - 4) - 2;
     pts += (i ? "L" : "M") + x + "," + y;
+    area += x + "," + y + " ";
   });
 
+  area += (w-px) + "," + h + " " + px + "," + h;
   const lastY = h - ((cd[n-1][3] - mn) / r) * (h - 4) - 2;
   const color = cd[n-1][3] >= cd[0][3] ? "var(--up)" : "var(--dn)";
+  const gradId = "grad" + Math.random().toString(36).substr(2, 9);
 
   return `<div class="cw"><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${color}" stop-opacity=".15"/>
+        <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <polygon points="${area}" fill="url(#${gradId})"/>
     <path d="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     <circle cx="${w-px}" cy="${lastY}" r="2.5" fill="${color}"/>
   </svg></div>`;
@@ -168,9 +158,13 @@ function sparkline(cd, mn, mx) {
 
 function rd(k, gid) {
   const g = document.getElementById(gid);
-  if (!D[k]) { g.innerHTML = "<p style='color:var(--t2);font-size:13px;padding:20px'>Data not available.</p>"; return; }
+  if (!D || !D[k] || !Array.isArray(D[k])) { 
+    g.innerHTML = "<p style='color:var(--t2);font-size:13px;padding:20px'>Dati non disponibili o in caricamento.</p>"; 
+    return; 
+  }
   
   g.innerHTML = D[k].map((it, idx) => {
+    if (!it || it.length < 7) return "";
     const n = it[0], pr = it[1], cp = it[3], cd = it[4], mn = it[5], mx = it[6];
     const ip = cp >= 0, sg = ip ? "+" : "", cl = ip ? "up" : "dn";
     const fr = pr < 100 && !n.includes("VIX") && !n.includes("Treasury") && !n.includes("Spread") ? 4 : 2;
@@ -181,7 +175,7 @@ function rd(k, gid) {
       <div class="n">${n} ${mb}</div>
       <div class="p">${pr.toLocaleString("it-IT", {minimumFractionDigits: fr, maximumFractionDigits: fr})}</div>
       <div class="r">
-        <span class="ch ${cl}">${ip ? "+" : ""}${cp}%</span>
+        <span class="ch ${cl}">${ip ? "▲" : "▼"} ${sg}${cp}%</span>
       </div>
       ${sparkline(cd, mn, mx)}
     </div>`;
@@ -195,80 +189,77 @@ function sw(t, e) {
   document.getElementById("s-" + t).classList.add("a");
 }
 
-function tog() {
-  const h = document.documentElement, c = h.getAttribute("data-theme");
-  if (c === "dark") h.setAttribute("data-theme", "light");
-  else if (c === "light") h.removeAttribute("data-theme");
-  else h.setAttribute("data-theme", "dark");
+function buildMiniChart(name, d, idx) {
+  if (!d || !Array.isArray(d) || d.length < 4 || !Array.isArray(d[0]) || !Array.isArray(d[1])) return;
+  const labels = d[0], prices = d[1], mn = d[2] || 0, mx = d[3] || 1;
+  const isPositive = prices[prices.length - 1] >= prices[0];
+  const lineColor = isPositive ? '#15803d' : '#b91c1c';
+  const canvasId = "canvas-mini-" + idx;
+  const yLimits = getYLimits(mn, mx);
   
-  if (currentModalData) { setTimeout(() => renderModalChart(), 50); }
-}
-
-// 2. GRAFICI GRANDI (Con griglia severa e assi)
-function buildMini(name, d, idx) {
-  const labels = d[0], prices = d[1], mn = d[2], mx = d[3], w = 600, h = 200, px = 50, py = 20, r = mx - mn || 1, n = prices.length;
-  let pts = "";
-  const xs = [], ys = [];
-  
-  prices.forEach((p, i) => {
-    const x = px + (i / (n - 1)) * (w - px - 20);
-    const y = h - py - ((p - mn) / r) * (h - py * 2);
-    xs.push(x); ys.push(y);
-    pts += (i ? "L" : "M") + x + "," + y;
-  });
-  
-  const isPositive = prices[n - 1] >= prices[0];
-  const lineColor = isPositive ? "var(--up)" : "var(--dn)";
-  
-  const maxVal = mx.toLocaleString('it-IT', {maximumFractionDigits: 2});
-  const midVal = ((mx + mn) / 2).toLocaleString('it-IT', {maximumFractionDigits: 2});
-  const minVal = mn.toLocaleString('it-IT', {maximumFractionDigits: 2});
-  const lblStart = labels[0], lblMid = labels[Math.floor(n/2)], lblEnd = labels[n-1];
-
-  return `
+  const html = `
   <div class="lc-card" onclick="openModal('${name.replace(/'/g, "\\'")}')">
-    <h3>${name} <span class="open-hint">Detailed Analysis →</span></h3>
-    <svg viewBox="0 0 ${w} ${h}">
-      <!-- Griglia pulita -->
-      <line x1="${px}" y1="${py}" x2="${w-20}" y2="${py}" stroke="var(--grid)" stroke-width="1"/>
-      <line x1="${px}" y1="${h/2}" x2="${w-20}" y2="${h/2}" stroke="var(--grid)" stroke-width="1"/>
-      <line x1="${px}" y1="${h-py}" x2="${w-20}" y2="${h-py}" stroke="var(--grid)" stroke-width="1"/>
-      
-      <!-- Assi Y -->
-      <text x="${px-8}" y="${py+4}" font-size="10" font-family="JetBrains Mono" fill="var(--t2)" text-anchor="end">${maxVal}</text>
-      <text x="${px-8}" y="${h/2+4}" font-size="10" font-family="JetBrains Mono" fill="var(--t2)" text-anchor="end">${midVal}</text>
-      <text x="${px-8}" y="${h-py+4}" font-size="10" font-family="JetBrains Mono" fill="var(--t2)" text-anchor="end">${minVal}</text>
-
-      <!-- Assi X -->
-      <text x="${px}" y="${h-4}" font-size="10" font-family="Inter" font-weight="600" fill="var(--t2)" text-anchor="middle">${lblStart}</text>
-      <text x="${px + (w-px-20)/2}" y="${h-4}" font-size="10" font-family="Inter" font-weight="600" fill="var(--t2)" text-anchor="middle">${lblMid}</text>
-      <text x="${w-20}" y="${h-4}" font-size="10" font-family="Inter" font-weight="600" fill="var(--t2)" text-anchor="middle">${lblEnd}</text>
-
-      <path d="${pts}" fill="none" stroke="${lineColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
+    <h3>${name} <span class="open-hint">Analisi →</span></h3>
+    <div class="chart-container-large">
+      <canvas id="${canvasId}"></canvas>
+    </div>
     <div class="info">
-      <span>Min: ${mn}</span>
-      <span>Max: ${mx}</span>
+      <div>Min: <span>${mn.toLocaleString('it-IT')}</span></div>
+      <div>Max: <span>${mx.toLocaleString('it-IT')}</span></div>
     </div>
   </div>`;
+  
+  document.getElementById('lc').insertAdjacentHTML('beforeend', html);
+  
+  setTimeout(() => {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    let gradient = ctx.createLinearGradient(0, 0, 0, 250);
+    gradient.addColorStop(0, isPositive ? 'rgba(21, 128, 61, 0.2)' : 'rgba(185, 28, 28, 0.2)');
+    gradient.addColorStop(1, isPositive ? 'rgba(21, 128, 61, 0)' : 'rgba(185, 28, 28, 0)');
+
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: prices, borderColor: lineColor, backgroundColor: gradient,
+          borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, fill: 'origin', tension: 0.2
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#ffffff', titleColor: '#6b7280', bodyColor: '#1e1e1e',
+            borderColor: '#e5e7eb', borderWidth: 1, displayColors: false, padding: 10,
+            callbacks: { label: function(context) { return context.parsed.y.toLocaleString('it-IT', {minimumFractionDigits: 2}); } }
+          }
+        },
+        scales: {
+          x: { grid: { display: false, drawBorder: false }, ticks: { color: '#6b7280', font: { size: 10, family: 'Inter', weight: '600' }, maxRotation: 0, autoSkip: true, maxTicksLimit: 6 } },
+          y: { min: yLimits.min, max: yLimits.max, position: 'right', grid: { color: '#f3f4f6', drawBorder: false }, ticks: { color: '#6b7280', font: { size: 10, family: 'Inter' }, callback: function(value) { return value.toLocaleString('it-IT', {maximumFractionDigits:0}); } } }
+        }
+      }
+    });
+    chartInstances.push(chart);
+  }, 0);
 }
 
-// 3. MODAL
 let currentModalData = null;
 function openModal(name) {
   const data = L[name];
   if (!data) return;
-  currentModalData = { name, labels: data[0], prices: data[1] };
+  currentModalData = { name, labels: data[0], prices: data[1], mn: data[2], mx: data[3] };
   
   document.getElementById('modal-title').textContent = name;
   const varTot = ((data[1][data[1].length - 1] - data[1][0]) / data[1][0] * 100).toFixed(2);
   const segno = varTot >= 0 ? '+' : '';
   const col = varTot >= 0 ? 'var(--up)' : 'var(--dn)';
-  document.getElementById('modal-sub').innerHTML = `12M Performance · <span style="color:${col};font-weight:700">${segno}${varTot}%</span>`;
+  document.getElementById('modal-sub').innerHTML = `12M Performance &middot; <span style="color:${col};font-weight:700">${segno}${varTot}%</span>`;
   
   renderModalChart();
   renderModalTable();
-  
   document.getElementById('modal').classList.add('active');
   document.body.style.overflow = 'hidden';
 }
@@ -285,67 +276,43 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 
 function renderModalChart() {
   const ctx = document.getElementById('modal-canvas').getContext('2d');
-  const { labels, prices } = currentModalData;
-  
+  const { labels, prices, mn, mx } = currentModalData;
   if(myChart) { myChart.destroy(); }
 
-  const style = getComputedStyle(document.documentElement);
-  const textColor = style.getPropertyValue('--t2').trim();
-  const gridColor = style.getPropertyValue('--grid').trim();
-  const upColor = style.getPropertyValue('--up').trim();
-  const dnColor = style.getPropertyValue('--dn').trim();
-  
   const isPositive = prices[prices.length - 1] >= prices[0];
-  const lineColor = isPositive ? upColor : dnColor;
+  const lineColor = isPositive ? '#15803d' : '#b91c1c';
+  const yLimits = getYLimits(mn, mx);
+
+  let gradient = ctx.createLinearGradient(0, 0, 0, 450);
+  gradient.addColorStop(0, isPositive ? 'rgba(21, 128, 61, 0.2)' : 'rgba(185, 28, 28, 0.2)');
+  gradient.addColorStop(1, isPositive ? 'rgba(21, 128, 61, 0)' : 'rgba(185, 28, 28, 0)');
 
   myChart = new Chart(ctx, {
     type: 'line',
     data: {
       labels: labels,
       datasets: [{
-        data: prices,
-        borderColor: lineColor,
-        borderWidth: 2,
-        pointRadius: 0,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: lineColor,
-        pointHoverBorderColor: '#fff',
-        tension: 0.1 
+        data: prices, borderColor: lineColor, backgroundColor: gradient,
+        borderWidth: 2, pointRadius: 0, pointHoverRadius: 6, pointHoverBackgroundColor: lineColor,
+        pointHoverBorderColor: '#fff', pointHoverBorderWidth: 2, fill: 'origin', tension: 0.2 
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(15, 23, 42, 0.9)',
-          titleFont: { size: 12, family: 'Inter' },
-          bodyFont: { size: 14, weight: '600', family: 'JetBrains Mono' },
-          padding: 10,
-          displayColors: false,
-          callbacks: {
-            label: function(context) {
-              return context.parsed.y.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            }
-          }
+          backgroundColor: '#ffffff', titleColor: '#6b7280', bodyColor: '#1e1e1e',
+          borderColor: '#e5e7eb', borderWidth: 1, titleFont: { size: 12, family: 'Inter' },
+          bodyFont: { size: 16, weight: '600', family: 'Playfair Display' },
+          padding: 12, displayColors: false,
+          callbacks: { label: function(context) { return context.parsed.y.toLocaleString('it-IT', {minimumFractionDigits: 2}); } }
         }
       },
       scales: {
-        x: {
-          grid: { display: false },
-          ticks: { color: textColor, font: { size: 11, family: 'Inter', weight: '600' } }
-        },
-        y: {
-          position: 'right',
-          grid: { color: gridColor, drawBorder: false, borderDash: [3, 3] },
-          ticks: { 
-            color: textColor, 
-            font: { size: 11, family: 'JetBrains Mono' },
-            callback: function(value) { return value.toLocaleString('it-IT'); }
-          }
-        }
+        x: { grid: { display: false, drawBorder: false }, ticks: { color: '#6b7280', font: { size: 12, family: 'Inter', weight: '600' } } },
+        y: { min: yLimits.min, max: yLimits.max, position: 'right', grid: { color: '#f3f4f6', drawBorder: false }, ticks: { color: '#6b7280', font: { size: 12, family: 'Inter' }, callback: function(value) { return value.toLocaleString('it-IT', {maximumFractionDigits:0}); } } }
       }
     }
   });
@@ -362,7 +329,7 @@ function renderModalTable() {
     const col = diff >= 0 ? 'var(--up)' : 'var(--dn)';
     const sg = diff >= 0 ? '+' : '';
     html += `<tr>
-      <td style="font-weight:600">${labels[i]}</td>
+      <td>${labels[i]}</td>
       <td>${p.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
       <td style="color:${col}">${i === 0 ? '—' : sg + diff.toFixed(2)}</td>
       <td style="color:${col}">${i === 0 ? '—' : sg + pct + '%'}</td>
@@ -371,31 +338,45 @@ function renderModalTable() {
   tbody.innerHTML = html;
 }
 
+// FUNZIONE DI CARICAMENTO BLINDATA
 async function caricaDati() {
   try {
-    const response = await fetch('dati.json');
-    if (!response.ok) throw new Error("Error");
+    const response = await fetch('dati.json', { cache: "no-store" }); // Forza il download fresco
+    if (!response.ok) throw new Error("File dati.json non trovato");
+    
     const data = await response.json();
     
     if (data.timestamp) {
-      document.getElementById("ut").textContent = "Last Update: " + data.timestamp;
+      document.getElementById("ut").textContent = "Ultimo Aggiornamento: " + data.timestamp;
     }
     
     D = data.D || {};
     L = data.L || {};
     
-    rd("forex", "g-fx"); rd("indices", "g-ix"); rd("sectors", "g-sc"); rd("macro", "g-mc");
+    rd("forex", "g-fx"); 
+    rd("indices", "g-ix"); 
+    rd("sectors", "g-sc"); 
+    rd("macro", "g-mc");
     
     const lc = document.getElementById("lc");
     lc.innerHTML = ""; 
     if (Object.keys(L).length > 0) {
       Object.entries(L).forEach(([name, d], idx) => {
-        lc.innerHTML += buildMini(name, d, idx);
+        buildMiniChart(name, d, idx);
       });
+    } else {
+      lc.innerHTML = "<p style='color:var(--t2);font-size:13px;padding:20px'>Dati storici in elaborazione...</p>";
     }
   } catch (error) {
-    console.error(error);
-    document.getElementById("ut").textContent = "Data Unavailable";
+    console.error("ERRORE CARICAMENTO:", error);
+    document.getElementById("ut").textContent = "Dati in caricamento...";
+    
+    // In caso di errore, scrive nelle sezioni ma non rompe la pagina
+    document.getElementById("g-fx").innerHTML = "<p style='color:var(--t2);font-size:13px;padding:20px'>Impossibile caricare i dati. Verifica il workflow.</p>";
+    document.getElementById("g-ix").innerHTML = "<p style='color:var(--t2);font-size:13px;padding:20px'>Impossibile caricare i dati.</p>";
+    document.getElementById("g-sc").innerHTML = "<p style='color:var(--t2);font-size:13px;padding:20px'>Impossibile caricare i dati.</p>";
+    document.getElementById("g-mc").innerHTML = "<p style='color:var(--t2);font-size:13px;padding:20px'>Impossibile caricare i dati.</p>";
+    document.getElementById("lc").innerHTML = "<p style='color:var(--t2);font-size:13px;padding:20px'>Impossibile caricare i grafici.</p>";
   }
 }
 

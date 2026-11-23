@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="refresh" content="300">
 <title>Market Overview | Dashboard Istituzionale</title>
+<!-- Introduciamo Chart.js per grafici professionali -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root{
   --bg:#f4f7f9; --card:#ffffff; --text:#1e293b; --t2:#64748b; --t3:#94a3b8;
@@ -45,7 +47,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .ch{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
 .up{color:var(--up)}.dn{color:var(--dn)}
 
-.cw{width:100%;height:40px;margin-top:16px;position:relative}
+.cw{width:100%;height:50px;margin-top:16px;position:relative}
 .cw svg{width:100%;height:100%;display:block;overflow:visible}
 .bm{display:inline-block;font-size:10px;background:var(--t3);color:#fff;padding:2px 6px;border-radius:4px;font-weight:600;letter-spacing:.5px}
 
@@ -67,14 +69,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .modal-close:hover{color:var(--dn)}
 .modal h2{font-size:22px;font-weight:700;margin-bottom:4px;color:var(--ac)}
 .modal-sub{font-size:14px;color:var(--t2);margin-bottom:24px}
-.modal-chart-wrap{position:relative;width:100%;height:400px;margin-bottom:24px}
-.modal-chart-wrap svg{width:100%;height:100%;display:block}
-.modal-tooltip{position:absolute;background:var(--text);color:var(--bg);border-radius:6px;padding:10px 14px;font-size:12px;pointer-events:none;opacity:0;transition:opacity .15s;box-shadow:0 4px 12px rgba(0,0,0,.2);z-index:10;white-space:nowrap}
-.modal-tooltip .tt-date{opacity:.8;font-size:11px;margin-bottom:4px}
-.modal-tooltip .tt-val{font-weight:700;font-size:15px}
-.modal-line{stroke:var(--t3);stroke-width:1;stroke-dasharray:4 4;opacity:0;pointer-events:none}
-.modal-dot{fill:var(--ac);stroke:var(--card);stroke-width:3;opacity:0;pointer-events:none}
-.modal-overlay{fill:transparent;cursor:crosshair}
+.modal-chart-wrap{position:relative;width:100%;height:450px;margin-bottom:24px}
 
 .data-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:16px}
 .data-table th,.data-table td{padding:12px;text-align:left;border-bottom:1px solid var(--b)}
@@ -117,29 +112,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
     <div class="modal-close" onclick="closeModal()">&times;</div>
     <h2 id="modal-title"></h2>
     <div class="modal-sub" id="modal-sub"></div>
-    <div class="modal-chart-wrap" id="modal-chart-wrap">
-      <svg id="modal-svg" viewBox="0 0 900 420" preserveAspectRatio="xMidYMid meet">
-        <defs>
-          <linearGradient id="modalGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="var(--ac)" stop-opacity=".15"/>
-            <stop offset="100%" stop-color="var(--ac)" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <rect id="modal-grid" fill="none" stroke="var(--b)" stroke-width="1"/>
-        <polyline id="modal-line-path" fill="none" stroke="var(--ac)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <polygon id="modal-area" fill="url(#modalGrad)"/>
-        <line id="modal-guide" class="modal-line" x1="0" y1="0" x2="0" y2="420"/>
-        <circle id="modal-point" class="modal-dot" r="5"/>
-        <text id="modal-label-start" font-size="12" font-weight="600" fill="var(--t2)"></text>
-        <text id="modal-label-end" font-size="12" font-weight="600" fill="var(--t2)"></text>
-        <text id="modal-val-start" font-size="12" font-weight="600" fill="var(--t2)" text-anchor="end"></text>
-        <text id="modal-val-end" font-size="14" fill="var(--ac)" font-weight="700"></text>
-        <rect id="modal-hit" class="modal-overlay" width="900" height="420"/>
-      </svg>
-      <div id="modal-tooltip" class="modal-tooltip">
-        <div class="tt-date" id="tt-date"></div>
-        <div class="tt-val" id="tt-val"></div>
-      </div>
+    <div class="modal-chart-wrap">
+      <canvas id="modal-canvas"></canvas>
     </div>
     <table class="data-table" id="modal-table">
       <thead><tr><th>Periodo</th><th>Valore</th><th>Variazione Assoluta</th><th>Variazione %</th></tr></thead>
@@ -153,24 +127,43 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 <script>
 let D = {};
 let L = {};
+let myChart = null; // Variabile per il grafico grande
 
+// --- 1. GENERAZIONE SPARKLINE CON GRIGLIA (CARD PICCOLE) ---
 function sparkline(cd, mn, mx) {
-  const w = 240, h = 40, px = 2, n = cd.length;
+  const w = 240, h = 50, px = 30, py = 10, n = cd.length;
   const r = mx - mn || 1;
   let pts = "";
   
   cd.forEach((c, i) => {
-    const x = px + (i / (n - 1)) * (w - px * 2);
-    const y = h - ((c[3] - mn) / r) * (h - 4) - 2;
+    const x = px + (i / (n - 1)) * (w - px - 10);
+    const y = h - py - ((c[3] - mn) / r) * (h - py * 2);
     pts += (i ? "L" : "M") + x + "," + y;
   });
 
-  const lastY = h - ((cd[n-1][3] - mn) / r) * (h - 4) - 2;
+  const lastX = px + (w - px - 10);
+  const lastY = h - py - ((cd[n-1][3] - mn) / r) * (h - py * 2);
   const color = cd[n-1][3] >= cd[0][3] ? "var(--up)" : "var(--dn)";
+  
+  // Calcolo valori intermedi per la griglia
+  const midVal = ((mx + mn) / 2).toLocaleString('it-IT', {maximumFractionDigits: 2});
+  const maxVal = mx.toLocaleString('it-IT', {maximumFractionDigits: 2});
+  const minVal = mn.toLocaleString('it-IT', {maximumFractionDigits: 2});
 
   return `<div class="cw"><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <!-- Griglia orizzontale -->
+    <line x1="${px}" y1="${py}" x2="${w-10}" y2="${py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="2 2"/>
+    <line x1="${px}" y1="${h/2}" x2="${w-10}" y2="${h/2}" stroke="var(--b)" stroke-width="1" stroke-dasharray="2 2"/>
+    <line x1="${px}" y1="${h-py}" x2="${w-10}" y2="${h-py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="2 2"/>
+    
+    <!-- Etichette Y -->
+    <text x="${px-5}" y="${py+4}" font-size="9" fill="var(--t2)" text-anchor="end">${maxVal}</text>
+    <text x="${px-5}" y="${h/2+3}" font-size="9" fill="var(--t2)" text-anchor="end">${midVal}</text>
+    <text x="${px-5}" y="${h-py+3}" font-size="9" fill="var(--t2)" text-anchor="end">${minVal}</text>
+
+    <!-- Linea -->
     <path d="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="${w-px}" cy="${lastY}" r="3" fill="${color}"/>
+    <circle cx="${lastX}" cy="${lastY}" r="3" fill="${color}"/>
   </svg></div>`;
 }
 
@@ -190,7 +183,6 @@ function rd(k, gid) {
       <div class="p">${pr.toLocaleString("it-IT", {minimumFractionDigits: fr, maximumFractionDigits: fr})}</div>
       <div class="r">
         <span class="ch ${cl}">${ip ? "▲" : "▼"} ${sg}${cp}%</span>
-        <span class="ch ${cl}" style="opacity:.7;font-size:12px">${sg}${ch.toLocaleString("it-IT", {minimumFractionDigits: fr, maximumFractionDigits: fr})}</span>
       </div>
       ${sparkline(cd, mn, mx)}
     </div>`;
@@ -209,69 +201,88 @@ function tog() {
   if (c === "dark") h.setAttribute("data-theme", "light");
   else if (c === "light") h.removeAttribute("data-theme");
   else h.setAttribute("data-theme", "dark");
+  
+  // Se il modal è aperto, ridisegna il grafico per aggiornare i colori di griglia e testo
+  if (currentModalData) {
+    setTimeout(() => renderModalChart(), 50); 
+  }
 }
 
+// --- 2. GRAFICI STORICI MINI (CARD GRANDI IN BASSO) ---
 function buildMini(name, d, idx) {
-  const labels = d[0], prices = d[1], mn = d[2], mx = d[3], w = 700, h = 180, px = 40, py = 20, r = mx - mn || 1, n = prices.length;
+  const labels = d[0], prices = d[1], mn = d[2], mx = d[3], w = 600, h = 220, px = 50, py = 20, r = mx - mn || 1, n = prices.length;
   let pts = "";
   const xs = [], ys = [];
   
   prices.forEach((p, i) => {
-    const x = px + (i / (n - 1)) * (w - px * 2);
+    const x = px + (i / (n - 1)) * (w - px - 20);
     const y = h - py - ((p - mn) / r) * (h - py * 2);
     xs.push(x); ys.push(y);
     pts += (i ? "L" : "M") + x + "," + y;
   });
   
-  let areaPath = `M ${px},${h} L ${xs[0]},${ys[0]} `;
-  for (let i = 1; i < n; i++) {
-    areaPath += `L ${xs[i]},${ys[i]} `;
-  }
-  areaPath += `L ${xs[n-1]},${h} Z`;
-
   const lastX = xs[n - 1], lastY = ys[n - 1];
-  const firstY = ys[0];
-  const varTot = ((prices[prices.length - 1] - prices[0]) / prices[0] * 100).toFixed(2);
-  const gradId = "g" + name.replace(/[^a-z]/gi, "") + idx;
   const isPositive = prices[n - 1] >= prices[0];
   const lineColor = isPositive ? "var(--up)" : "var(--dn)";
   
+  // Assegnamo 3 valori Y (Max, Mid, Min)
+  const maxVal = mx.toLocaleString('it-IT', {maximumFractionDigits: 2});
+  const midVal = ((mx + mn) / 2).toLocaleString('it-IT', {maximumFractionDigits: 2});
+  const minVal = mn.toLocaleString('it-IT', {maximumFractionDigits: 2});
+
+  // Etichette X (Prima, Metà, Ultima)
+  const lblStart = labels[0];
+  const lblMid = labels[Math.floor(n/2)];
+  const lblEnd = labels[n-1];
+
   return `
   <div class="lc-card" onclick="openModal('${name.replace(/'/g, "\\'")}')">
     <h3>${name} <span class="open-hint">Analisi dettagliata →</span></h3>
     <svg viewBox="0 0 ${w} ${h}">
-      <defs>
-        <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="${lineColor}" stop-opacity=".2"/>
-          <stop offset="100%" stop-color="${lineColor}" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-      <line x1="${px}" y1="${py}" x2="${w - px}" y2="${py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="3 3"/>
-      <line x1="${px}" y1="${h - py}" x2="${w - px}" y2="${h - py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="3 3"/>
-      <path d="${areaPath}" fill="url(#${gradId})"/>
+      <!-- Griglia orizzontale -->
+      <line x1="${px}" y1="${py}" x2="${w-20}" y2="${py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="${px}" y1="${h/2}" x2="${w-20}" y2="${h/2}" stroke="var(--b)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="${px}" y1="${h-py}" x2="${w-20}" y2="${h-py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="4 4"/>
+      
+      <!-- Griglia verticale -->
+      <line x1="${px}" y1="${py}" x2="${px}" y2="${h-py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="${px + (w-px-20)/2}" y1="${py}" x2="${px + (w-px-20)/2}" y2="${h-py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="${w-20}" y1="${py}" x2="${w-20}" y2="${h-py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="4 4"/>
+
+      <!-- Etichette Y -->
+      <text x="${px-8}" y="${py+4}" font-size="11" font-weight="600" fill="var(--t2)" text-anchor="end">${maxVal}</text>
+      <text x="${px-8}" y="${h/2+4}" font-size="11" font-weight="600" fill="var(--t2)" text-anchor="end">${midVal}</text>
+      <text x="${px-8}" y="${h-py+4}" font-size="11" font-weight="600" fill="var(--t2)" text-anchor="end">${minVal}</text>
+
+      <!-- Etichette X -->
+      <text x="${px}" y="${h-4}" font-size="11" font-weight="600" fill="var(--t2)" text-anchor="middle">${lblStart}</text>
+      <text x="${px + (w-px-20)/2}" y="${h-4}" font-size="11" font-weight="600" fill="var(--t2)" text-anchor="middle">${lblMid}</text>
+      <text x="${w-20}" y="${h-4}" font-size="11" font-weight="600" fill="var(--t2)" text-anchor="middle">${lblEnd}</text>
+
+      <!-- Linea -->
       <path d="${pts}" fill="none" stroke="${lineColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       <circle cx="${lastX}" cy="${lastY}" r="4" fill="${lineColor}" stroke="var(--card)" stroke-width="2"/>
-      <text x="${px}" y="${py - 8}" font-size="11" font-weight="600" fill="var(--t2)">${labels[0]}</text>
-      <text x="${w - px - 40}" y="${py - 8}" font-size="11" font-weight="600" fill="var(--t2)">${labels[labels.length - 1]}</text>
-      <text x="${px - 8}" y="${firstY + 4}" font-size="11" font-weight="600" fill="var(--t2)" text-anchor="end">${prices[0]}</text>
-      <text x="${lastX + 8}" y="${lastY + 4}" font-size="12" font-weight="700" fill="${lineColor}">${prices[prices.length - 1]}</text>
     </svg>
-    <div class="info"><span>Min: ${mn}</span><span>Max: ${mx}</span><span>Var: ${varTot}%</span></div>
+    <div class="info"><span>Min: ${mn}</span><span>Max: ${mx}</span></div>
   </div>`;
 }
 
+// --- 3. GESTIONE MODAL E CHART.JS ---
 let currentModalData = null;
 function openModal(name) {
   const data = L[name];
   if (!data) return;
-  currentModalData = { name, labels: data[0], prices: data[1], mn: data[2], mx: data[3] };
+  currentModalData = { name, labels: data[0], prices: data[1] };
+  
   document.getElementById('modal-title').textContent = name;
   const varTot = ((data[1][data[1].length - 1] - data[1][0]) / data[1][0] * 100).toFixed(2);
   const segno = varTot >= 0 ? '+' : '';
   const col = varTot >= 0 ? 'var(--up)' : 'var(--dn)';
   document.getElementById('modal-sub').innerHTML = `Andamento a 12 mesi · <span style="color:${col};font-weight:700">${segno}${varTot}%</span> da inizio periodo`;
+  
   renderModalChart();
   renderModalTable();
+  
   document.getElementById('modal').classList.add('active');
   document.body.style.overflow = 'hidden';
 }
@@ -280,6 +291,7 @@ function closeModal() {
   document.getElementById('modal').classList.remove('active');
   document.body.style.overflow = '';
   currentModalData = null;
+  if(myChart) { myChart.destroy(); myChart = null; }
 }
 
 function closeModalOutside(e) {
@@ -289,96 +301,90 @@ function closeModalOutside(e) {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 function renderModalChart() {
-  const { labels, prices, mn, mx } = currentModalData;
-  const w = 900, h = 420, px = 60, py = 40, n = prices.length;
-  const r = mx - mn || 1;
-  let pts = "";
-  const xs = [], ys = [];
+  const ctx = document.getElementById('modal-canvas').getContext('2d');
+  const { labels, prices } = currentModalData;
   
-  prices.forEach((p, i) => {
-    const x = px + (i / (n - 1)) * (w - px * 2);
-    const y = h - py - ((p - mn) / r) * (h - py * 2);
-    xs.push(x); ys.push(y);
-    pts += (i ? "L" : "M") + x + "," + y;
+  if(myChart) { myChart.destroy(); }
+
+  // Recupera i colori CSS attuali (per light/dark mode)
+  const style = getComputedStyle(document.documentElement);
+  const textColor = style.getPropertyValue('--t2').trim();
+  const gridColor = style.getPropertyValue('--b').trim();
+  const upColor = style.getPropertyValue('--up').trim();
+  const dnColor = style.getPropertyValue('--dn').trim();
+  
+  const isPositive = prices[prices.length - 1] >= prices[0];
+  const lineColor = isPositive ? upColor : dnColor;
+
+  myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: currentModalData.name,
+        data: prices,
+        borderColor: lineColor,
+        backgroundColor: 'transparent',
+        borderWidth: 2.5,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        pointHoverBackgroundColor: lineColor,
+        pointHoverBorderColor: '#fff',
+        pointHoverBorderWidth: 2,
+        tension: 0.1 // Curva leggermente addolcita
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(30, 41, 59, 0.9)',
+          titleFont: { size: 13, family: '-apple-system, sans-serif' },
+          bodyFont: { size: 15, weight: 'bold', family: '-apple-system, sans-serif' },
+          padding: 12,
+          displayColors: false,
+          callbacks: {
+            label: function(context) {
+              return context.parsed.y.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false, // Nasconde le linee verticali per pulizia
+            drawBorder: false
+          },
+          ticks: {
+            color: textColor,
+            font: { size: 12, family: '-apple-system, sans-serif', weight: '600' }
+          }
+        },
+        y: {
+          position: 'right', // Valori sull'asse destro (stile Bloomberg)
+          grid: {
+            color: gridColor,
+            drawBorder: false,
+            borderDash: [5, 5]
+          },
+          ticks: {
+            color: textColor,
+            font: { size: 12, family: '-apple-system, sans-serif', weight: '600' },
+            callback: function(value) {
+              return value.toLocaleString('it-IT');
+            }
+          }
+        }
+      }
+    }
   });
-  
-  let areaPath = `M ${px},${h} L ${xs[0]},${ys[0]} `;
-  for (let i = 1; i < n; i++) {
-    areaPath += `L ${xs[i]},${ys[i]} `;
-  }
-  areaPath += `L ${xs[n-1]},${h} Z`;
-
-  const grid = document.getElementById('modal-grid');
-  grid.setAttribute('x', px); grid.setAttribute('y', py);
-  grid.setAttribute('width', w - px * 2); grid.setAttribute('height', h - py * 2);
-  
-  document.getElementById('modal-line-path').setAttribute('points', pts);
-  document.getElementById('modal-area').setAttribute('points', areaPath);
-  
-  document.getElementById('modal-label-start').textContent = labels[0];
-  document.getElementById('modal-label-start').setAttribute('x', px);
-  document.getElementById('modal-label-start').setAttribute('y', py - 12);
-  
-  document.getElementById('modal-label-end').textContent = labels[n - 1];
-  document.getElementById('modal-label-end').setAttribute('x', w - px - 40);
-  document.getElementById('modal-label-end').setAttribute('y', py - 12);
-  
-  const firstY = ys[0];
-  const lastY = ys[n - 1], lastX = xs[n - 1];
-  
-  document.getElementById('modal-val-start').textContent = prices[0].toLocaleString('it-IT', {maximumFractionDigits: 2});
-  document.getElementById('modal-val-start').setAttribute('x', px - 10);
-  document.getElementById('modal-val-start').setAttribute('y', firstY + 4);
-  
-  document.getElementById('modal-val-end').textContent = prices[n - 1].toLocaleString('it-IT', {maximumFractionDigits: 2});
-  document.getElementById('modal-val-end').setAttribute('x', lastX + 10);
-  document.getElementById('modal-val-end').setAttribute('y', lastY + 4);
-  
-  const hit = document.getElementById('modal-hit');
-  hit.setAttribute('x', px); hit.setAttribute('y', py);
-  hit.setAttribute('width', w - px * 2); hit.setAttribute('height', h - py * 2);
-  hit.onmousemove = e => handleModalHover(e, xs, ys, labels, prices, px, w, n);
-  hit.onmouseleave = () => hideModalTooltip();
-  
-  document.getElementById('modal-guide').style.opacity = 0;
-  document.getElementById('modal-point').style.opacity = 0;
-}
-
-function handleModalHover(e, xs, ys, labels, prices, px, w, n) {
-  const rect = e.target.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const plotW = w - px * 2;
-  const relX = mouseX - px;
-  let idx = Math.round((relX / plotW) * (n - 1));
-  idx = Math.max(0, Math.min(n - 1, idx));
-  
-  const x = xs[idx], y = ys[idx];
-  const guide = document.getElementById('modal-guide');
-  const point = document.getElementById('modal-point');
-  
-  guide.setAttribute('x1', x); guide.setAttribute('x2', x);
-  guide.setAttribute('y1', 40); guide.setAttribute('y2', 380);
-  guide.style.opacity = 1;
-  
-  point.setAttribute('cx', x); point.setAttribute('cy', y);
-  point.style.opacity = 1;
-  
-  const tt = document.getElementById('modal-tooltip');
-  document.getElementById('tt-date').textContent = labels[idx];
-  document.getElementById('tt-val').textContent = prices[idx].toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-  
-  const xPct = (x / 900) * 100;
-  const yPct = (y / 420) * 100;
-  tt.style.left = xPct + '%';
-  tt.style.top = yPct + '%';
-  tt.style.transform = 'translate(-50%, -130%)';
-  tt.style.opacity = 1;
-}
-
-function hideModalTooltip() {
-  document.getElementById('modal-guide').style.opacity = 0;
-  document.getElementById('modal-point').style.opacity = 0;
-  document.getElementById('modal-tooltip').style.opacity = 0;
 }
 
 function renderModalTable() {

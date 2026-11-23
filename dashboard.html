@@ -4,79 +4,95 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="refresh" content="300">
-<title>Market Overview | Dashboard Istituzionale</title>
-<!-- Introduciamo Chart.js per grafici professionali -->
+<title>Market Overview | Terminal</title>
+<!-- Font professionali: Inter per il testo, JetBrains Mono per i numeri -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root{
-  --bg:#f4f7f9; --card:#ffffff; --text:#1e293b; --t2:#64748b; --t3:#94a3b8;
-  --b:#e2e8f0; --up:#059669; --dn:#dc2626; --ac:#1e3a8a;
-  --sh:rgba(15,23,42,.05); --al:#d97706;
+  /* Palette Istituzionale: Grigi freddi, blu notte, verde bosco, bordeaux */
+  --bg:#f8fafc; --card:#ffffff; --text:#0f172a; --t2:#475569; --t3:#94a3b8;
+  --b:#e2e8f0; --up:#047857; --dn:#be123c; --ac:#1e40af;
+  --sh:rgba(15,23,42,.04); --grid: rgba(148, 163, 184, 0.2);
 }
 [data-theme="dark"]{
-  --bg:#0f172a; --card:#1e293b; --text:#f8fafc; --t2:#94a3b8; --t3:#64748b;
-  --b:#334155; --up:#10b981; --dn:#ef4444; --ac:#3b82f6; --sh:rgba(0,0,0,.4); --al:#f59e0b;
+  /* Tema Dark Terminal */
+  --bg:#09090b; --card:#121214; --text:#f4f4f5; --t2:#a1a1aa; --t3:#52525b;
+  --b:#27272a; --up:#10b981; --dn:#e11d48; --ac:#3b82f6; --sh:rgba(0,0,0,.5); --grid: rgba(63, 63, 70, 0.5);
 }
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f172a;--card:#1e293b;--text:#f8fafc;--t2:#94a3b8;--t3:#64748b;--b:#334155;--up:#10b981;--dn:#ef4444;--ac:#3b82f6;--sh:rgba(0,0,0,.4);--al:#f59e0b}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#09090b;--card:#121214;--text:#f4f4f5;--t2:#a1a1aa;--t3:#52525b;--b:#27272a;--up:#10b981;--dn:#e11d48;--ac:#3b82f6;--sh:rgba(0,0,0,.5);--grid: rgba(63, 63, 70, 0.5);}}
 
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);padding:24px 32px;transition:background .3s,color .3s}
+body{
+  font-family: 'Inter', -apple-system, sans-serif;
+  background:var(--bg); color:var(--text); padding:24px 32px;
+  transition:background .3s,color .3s; -webkit-font-smoothing: antialiased;
+}
 
-.tb{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px;border-bottom:1px solid var(--b);padding-bottom:16px}
-.tb h1{font-size:24px;font-weight:700;letter-spacing:-.5px;color:var(--ac)}
-.tb p{font-size:13px;color:var(--t2);margin-top:4px;font-weight:500}
+/* HEADER DA TERMINALE */
+.tb{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;border-bottom:1px solid var(--b);padding-bottom:16px}
+.tb h1{font-size:20px;font-weight:600;letter-spacing:-.3px}
+.tb p{font-size:12px;color:var(--t2);margin-top:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
 .tr{display:flex;align-items:center;gap:16px}
-.ut{font-size:12px;color:var(--t2);font-weight:500;background:var(--card);padding:6px 12px;border-radius:6px;border:1px solid var(--b)}
-.tt{background:var(--card);border:1px solid var(--b);color:var(--t2);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
-.tt:hover{border-color:var(--ac);color:var(--ac)}
+.ut{font-size:12px;color:var(--t2);font-family:'JetBrains Mono', monospace;font-weight:500;background:var(--card);padding:6px 12px;border-radius:4px;border:1px solid var(--b)}
+.tt{background:var(--card);border:1px solid var(--b);color:var(--t2);padding:6px 14px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.tt:hover{border-color:var(--ac);color:var(--text)}
 
-.tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
-.tab{padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;color:var(--t2);background:transparent;border:1px solid transparent;transition:all .2s}
-.tab:hover{color:var(--ac);background:var(--card)}
-.tab.a{background:var(--ac);color:#fff;border-color:var(--ac)}
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:24px;flex-wrap:wrap;border-bottom:1px solid var(--b)}
+.tab{padding:10px 16px;cursor:pointer;font-size:13px;font-weight:600;color:var(--t2);background:transparent;border:none;border-bottom:2px solid transparent;transition:all .2s;margin-bottom:-1px}
+.tab:hover{color:var(--text)}
+.tab.a{color:var(--ac);border-bottom:2px solid var(--ac)}
 .sec{display:none}
-.sec.a{display:block}
+.sec.a{display:block; animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-.c{background:var(--card);border-radius:8px;padding:20px;border:1px solid var(--b);transition:box-shadow .2s,border-color .2s;position:relative;animation:fiu .4s ease both}
-.c:hover{box-shadow:0 4px 12px var(--sh);border-color:var(--t3)}
-@keyframes fiu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.n{font-size:12px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
-.p{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1;color:var(--text)}
-.r{display:flex;align-items:baseline;gap:12px;margin-top:8px}
-.ch{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+/* GRID UNIFORME */
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+
+/* CARD FINANZIARIE */
+.c{background:var(--card);border-radius:6px;padding:16px 20px;border:1px solid var(--b);transition:border-color .2s, box-shadow .2s;position:relative}
+.c:hover{border-color:var(--t3);box-shadow:0 4px 12px var(--sh)}
+.n{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.p{font-family:'JetBrains Mono', monospace;font-size:24px;font-weight:600;line-height:1.1;color:var(--text);letter-spacing:-.5px}
+.r{display:flex;align-items:baseline;gap:10px;margin-top:6px}
+.ch{font-family:'JetBrains Mono', monospace;font-size:12px;font-weight:600}
 .up{color:var(--up)}.dn{color:var(--dn)}
+.bm{display:inline-block;font-size:9px;background:var(--t3);color:#fff;padding:1px 4px;border-radius:2px;font-weight:600;letter-spacing:.5px}
 
-.cw{width:100%;height:50px;margin-top:16px;position:relative}
+/* SPARKLINE PULITA (Senza griglia, solo trend) */
+.cw{width:100%;height:40px;margin-top:14px;position:relative}
 .cw svg{width:100%;height:100%;display:block;overflow:visible}
-.bm{display:inline-block;font-size:10px;background:var(--t3);color:#fff;padding:2px 6px;border-radius:4px;font-weight:600;letter-spacing:.5px}
 
-.h2{font-size:18px;font-weight:700;margin:40px 0 20px;color:var(--ac);letter-spacing:-.3px}
-.lc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:20px}
-.lc-card{background:var(--card);border-radius:8px;padding:20px;border:1px solid var(--b);cursor:pointer;transition:all .2s}
-.lc-card:hover{border-color:var(--ac);box-shadow:0 4px 12px var(--sh)}
+/* SEZIONE STORICI */
+.h2{font-size:16px;font-weight:600;margin:40px 0 20px;letter-spacing:-.3px;border-bottom:1px solid var(--b);padding-bottom:10px}
+.lc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(450px,1fr));gap:20px}
+.lc-card{background:var(--card);border-radius:6px;padding:20px;border:1px solid var(--b);cursor:pointer;transition:all .2s}
+.lc-card:hover{border-color:var(--ac)}
 .lc-card h3{font-size:14px;font-weight:600;margin-bottom:16px;color:var(--text);display:flex;justify-content:space-between;align-items:center}
-.lc-card .open-hint{font-size:11px;color:var(--ac);font-weight:600;opacity:0;transition:opacity .2s}
+.lc-card .open-hint{font-size:11px;color:var(--ac);font-weight:500;opacity:0;transition:opacity .2s}
 .lc-card:hover .open-hint{opacity:1}
 .lc-card svg{width:100%;height:180px;display:block}
-.lc-card .info{display:flex;gap:20px;margin-top:12px;font-size:12px;color:var(--t2);font-weight:500}
-.lc-card .info span{color:var(--text);font-weight:700}
+.lc-card .info{display:flex;justify-content:space-between;margin-top:12px;font-size:11px;color:var(--t2);font-family:'JetBrains Mono', monospace}
+.lc-card .info span{color:var(--text);font-weight:600}
 
-.modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px}
+/* MODAL E TABELLA (Stile Report) */
+.modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(9,9,11,.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px}
 .modal.active{display:flex}
-.modal-content{background:var(--card);border:1px solid var(--b);border-radius:12px;padding:32px;width:100%;max-width:1100px;max-height:90vh;overflow:auto;position:relative;box-shadow:0 24px 48px rgba(0,0,0,.2);animation:fiu .3s ease both}
-.modal-close{position:absolute;top:20px;right:24px;font-size:28px;cursor:pointer;color:var(--t2);line-height:1;transition:color .2s}
+.modal-content{background:var(--card);border:1px solid var(--b);border-radius:8px;padding:24px 32px;width:100%;max-width:1100px;max-height:90vh;overflow:auto;position:relative;box-shadow:0 24px 48px rgba(0,0,0,.3);animation:zoomIn .2s ease both}
+@keyframes zoomIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+.modal-close{position:absolute;top:16px;right:20px;font-size:24px;cursor:pointer;color:var(--t2);line-height:1;transition:color .2s}
 .modal-close:hover{color:var(--dn)}
-.modal h2{font-size:22px;font-weight:700;margin-bottom:4px;color:var(--ac)}
-.modal-sub{font-size:14px;color:var(--t2);margin-bottom:24px}
-.modal-chart-wrap{position:relative;width:100%;height:450px;margin-bottom:24px}
+.modal h2{font-size:20px;font-weight:600;margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--t2);margin-bottom:24px;font-weight:500}
+.modal-chart-wrap{position:relative;width:100%;height:400px;margin-bottom:24px}
 
 .data-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:16px}
-.data-table th,.data-table td{padding:12px;text-align:left;border-bottom:1px solid var(--b)}
-.data-table th{color:var(--t2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em;background:var(--bg)}
-.data-table td{font-variant-numeric:tabular-nums;font-weight:500}
+.data-table th,.data-table td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--b);font-family:'JetBrains Mono', monospace;}
+.data-table th:first-child,.data-table td:first-child{text-align:left;font-family:'Inter', sans-serif;}
+.data-table th{color:var(--t2);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.05em;background:var(--bg)}
+.data-table td{font-weight:500}
 .data-table tr:hover td{background:var(--bg)}
-.data-table .dt-var{font-weight:700}
 .ft{margin-top:40px;font-size:11px;color:var(--t3);text-align:center;border-top:1px solid var(--b);padding-top:20px}
 </style>
 </head>
@@ -84,16 +100,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 <div class="tb">
   <div>
     <h1>Market Overview</h1>
-    <p>Monitoraggio Asset Class · Contesto Macro · Visione Strategica</p>
+    <p>Asset Allocation · Global Markets · Macro Trends</p>
   </div>
   <div class="tr">
-    <span class="ut" id="ut">Caricamento dati...</span>
-    <button class="tt" onclick="tog()">🌓 Tema</button>
+    <span class="ut" id="ut">Loading data...</span>
+    <button class="tt" onclick="tog()">Theme</button>
   </div>
 </div>
 
 <div class="tabs">
-  <button class="tab a" onclick="sw('fx', event)">Valute</button>
+  <button class="tab a" onclick="sw('fx', event)">FX & Valute</button>
   <button class="tab" onclick="sw('ix', event)">Azionario Globale</button>
   <button class="tab" onclick="sw('sc', event)">Settori</button>
   <button class="tab" onclick="sw('mc', event)">Macro & Tassi</button>
@@ -104,7 +120,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 <div id="s-sc" class="sec"><div class="g" id="g-sc"></div></div>
 <div id="s-mc" class="sec"><div class="g" id="g-mc"></div></div>
 
-<h2 class="h2">Andamenti Storici (12 Mesi)</h2>
+<h2 class="h2">Historical Performance (12M)</h2>
 <div class="lc-grid" id="lc"></div>
 
 <div id="modal" class="modal" onclick="closeModalOutside(event)">
@@ -116,73 +132,56 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
       <canvas id="modal-canvas"></canvas>
     </div>
     <table class="data-table" id="modal-table">
-      <thead><tr><th>Periodo</th><th>Valore</th><th>Variazione Assoluta</th><th>Variazione %</th></tr></thead>
+      <thead><tr><th>Period</th><th>Value</th><th>Abs Change</th><th>% Change</th></tr></thead>
       <tbody id="modal-tbody"></tbody>
     </table>
   </div>
 </div>
 
-<div class="ft">Dati elaborati da Yahoo Finance · Aggiornamento automatico ogni 30 minuti</div>
+<div class="ft">Data provided by Yahoo Finance · Updates every 30 minutes</div>
 
 <script>
 let D = {};
 let L = {};
-let myChart = null; // Variabile per il grafico grande
+let myChart = null;
 
-// --- 1. GENERAZIONE SPARKLINE CON GRIGLIA (CARD PICCOLE) ---
+// 1. SPARKLINE PULITA (Niente griglia o testi, solo trend)
 function sparkline(cd, mn, mx) {
-  const w = 240, h = 50, px = 30, py = 10, n = cd.length;
+  const w = 240, h = 40, px = 2, n = cd.length;
   const r = mx - mn || 1;
   let pts = "";
   
   cd.forEach((c, i) => {
-    const x = px + (i / (n - 1)) * (w - px - 10);
-    const y = h - py - ((c[3] - mn) / r) * (h - py * 2);
+    const x = px + (i / (n - 1)) * (w - px * 2);
+    const y = h - ((c[3] - mn) / r) * (h - 4) - 2;
     pts += (i ? "L" : "M") + x + "," + y;
   });
 
-  const lastX = px + (w - px - 10);
-  const lastY = h - py - ((cd[n-1][3] - mn) / r) * (h - py * 2);
+  const lastY = h - ((cd[n-1][3] - mn) / r) * (h - 4) - 2;
   const color = cd[n-1][3] >= cd[0][3] ? "var(--up)" : "var(--dn)";
-  
-  // Calcolo valori intermedi per la griglia
-  const midVal = ((mx + mn) / 2).toLocaleString('it-IT', {maximumFractionDigits: 2});
-  const maxVal = mx.toLocaleString('it-IT', {maximumFractionDigits: 2});
-  const minVal = mn.toLocaleString('it-IT', {maximumFractionDigits: 2});
 
   return `<div class="cw"><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
-    <!-- Griglia orizzontale -->
-    <line x1="${px}" y1="${py}" x2="${w-10}" y2="${py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="2 2"/>
-    <line x1="${px}" y1="${h/2}" x2="${w-10}" y2="${h/2}" stroke="var(--b)" stroke-width="1" stroke-dasharray="2 2"/>
-    <line x1="${px}" y1="${h-py}" x2="${w-10}" y2="${h-py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="2 2"/>
-    
-    <!-- Etichette Y -->
-    <text x="${px-5}" y="${py+4}" font-size="9" fill="var(--t2)" text-anchor="end">${maxVal}</text>
-    <text x="${px-5}" y="${h/2+3}" font-size="9" fill="var(--t2)" text-anchor="end">${midVal}</text>
-    <text x="${px-5}" y="${h-py+3}" font-size="9" fill="var(--t2)" text-anchor="end">${minVal}</text>
-
-    <!-- Linea -->
-    <path d="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="${lastX}" cy="${lastY}" r="3" fill="${color}"/>
+    <path d="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${w-px}" cy="${lastY}" r="2.5" fill="${color}"/>
   </svg></div>`;
 }
 
 function rd(k, gid) {
   const g = document.getElementById(gid);
-  if (!D[k]) { g.innerHTML = "<p style='color:var(--t2);font-size:13px;padding:20px'>Dati non disponibili.</p>"; return; }
+  if (!D[k]) { g.innerHTML = "<p style='color:var(--t2);font-size:13px;padding:20px'>Data not available.</p>"; return; }
   
   g.innerHTML = D[k].map((it, idx) => {
-    const n = it[0], pr = it[1], ch = it[2], cp = it[3], cd = it[4], mn = it[5], mx = it[6];
+    const n = it[0], pr = it[1], cp = it[3], cd = it[4], mn = it[5], mx = it[6];
     const ip = cp >= 0, sg = ip ? "+" : "", cl = ip ? "up" : "dn";
     const fr = pr < 100 && !n.includes("VIX") && !n.includes("Treasury") && !n.includes("Spread") ? 4 : 2;
-    const mb = (n.includes("FTSE") || n.includes("Spread")) ? '<span class="bm">MANUALE</span>' : "";
+    const mb = (n.includes("FTSE") || n.includes("Spread")) ? '<span class="bm">MAN</span>' : "";
     
     return `
-    <div class="c" style="animation-delay:${idx * 0.03}s">
+    <div class="c">
       <div class="n">${n} ${mb}</div>
       <div class="p">${pr.toLocaleString("it-IT", {minimumFractionDigits: fr, maximumFractionDigits: fr})}</div>
       <div class="r">
-        <span class="ch ${cl}">${ip ? "▲" : "▼"} ${sg}${cp}%</span>
+        <span class="ch ${cl}">${ip ? "+" : ""}${cp}%</span>
       </div>
       ${sparkline(cd, mn, mx)}
     </div>`;
@@ -202,15 +201,12 @@ function tog() {
   else if (c === "light") h.removeAttribute("data-theme");
   else h.setAttribute("data-theme", "dark");
   
-  // Se il modal è aperto, ridisegna il grafico per aggiornare i colori di griglia e testo
-  if (currentModalData) {
-    setTimeout(() => renderModalChart(), 50); 
-  }
+  if (currentModalData) { setTimeout(() => renderModalChart(), 50); }
 }
 
-// --- 2. GRAFICI STORICI MINI (CARD GRANDI IN BASSO) ---
+// 2. GRAFICI GRANDI (Con griglia severa e assi)
 function buildMini(name, d, idx) {
-  const labels = d[0], prices = d[1], mn = d[2], mx = d[3], w = 600, h = 220, px = 50, py = 20, r = mx - mn || 1, n = prices.length;
+  const labels = d[0], prices = d[1], mn = d[2], mx = d[3], w = 600, h = 200, px = 50, py = 20, r = mx - mn || 1, n = prices.length;
   let pts = "";
   const xs = [], ys = [];
   
@@ -221,53 +217,43 @@ function buildMini(name, d, idx) {
     pts += (i ? "L" : "M") + x + "," + y;
   });
   
-  const lastX = xs[n - 1], lastY = ys[n - 1];
   const isPositive = prices[n - 1] >= prices[0];
   const lineColor = isPositive ? "var(--up)" : "var(--dn)";
   
-  // Assegnamo 3 valori Y (Max, Mid, Min)
   const maxVal = mx.toLocaleString('it-IT', {maximumFractionDigits: 2});
   const midVal = ((mx + mn) / 2).toLocaleString('it-IT', {maximumFractionDigits: 2});
   const minVal = mn.toLocaleString('it-IT', {maximumFractionDigits: 2});
-
-  // Etichette X (Prima, Metà, Ultima)
-  const lblStart = labels[0];
-  const lblMid = labels[Math.floor(n/2)];
-  const lblEnd = labels[n-1];
+  const lblStart = labels[0], lblMid = labels[Math.floor(n/2)], lblEnd = labels[n-1];
 
   return `
   <div class="lc-card" onclick="openModal('${name.replace(/'/g, "\\'")}')">
-    <h3>${name} <span class="open-hint">Analisi dettagliata →</span></h3>
+    <h3>${name} <span class="open-hint">Detailed Analysis →</span></h3>
     <svg viewBox="0 0 ${w} ${h}">
-      <!-- Griglia orizzontale -->
-      <line x1="${px}" y1="${py}" x2="${w-20}" y2="${py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="4 4"/>
-      <line x1="${px}" y1="${h/2}" x2="${w-20}" y2="${h/2}" stroke="var(--b)" stroke-width="1" stroke-dasharray="4 4"/>
-      <line x1="${px}" y1="${h-py}" x2="${w-20}" y2="${h-py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="4 4"/>
+      <!-- Griglia pulita -->
+      <line x1="${px}" y1="${py}" x2="${w-20}" y2="${py}" stroke="var(--grid)" stroke-width="1"/>
+      <line x1="${px}" y1="${h/2}" x2="${w-20}" y2="${h/2}" stroke="var(--grid)" stroke-width="1"/>
+      <line x1="${px}" y1="${h-py}" x2="${w-20}" y2="${h-py}" stroke="var(--grid)" stroke-width="1"/>
       
-      <!-- Griglia verticale -->
-      <line x1="${px}" y1="${py}" x2="${px}" y2="${h-py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="4 4"/>
-      <line x1="${px + (w-px-20)/2}" y1="${py}" x2="${px + (w-px-20)/2}" y2="${h-py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="4 4"/>
-      <line x1="${w-20}" y1="${py}" x2="${w-20}" y2="${h-py}" stroke="var(--b)" stroke-width="1" stroke-dasharray="4 4"/>
+      <!-- Assi Y -->
+      <text x="${px-8}" y="${py+4}" font-size="10" font-family="JetBrains Mono" fill="var(--t2)" text-anchor="end">${maxVal}</text>
+      <text x="${px-8}" y="${h/2+4}" font-size="10" font-family="JetBrains Mono" fill="var(--t2)" text-anchor="end">${midVal}</text>
+      <text x="${px-8}" y="${h-py+4}" font-size="10" font-family="JetBrains Mono" fill="var(--t2)" text-anchor="end">${minVal}</text>
 
-      <!-- Etichette Y -->
-      <text x="${px-8}" y="${py+4}" font-size="11" font-weight="600" fill="var(--t2)" text-anchor="end">${maxVal}</text>
-      <text x="${px-8}" y="${h/2+4}" font-size="11" font-weight="600" fill="var(--t2)" text-anchor="end">${midVal}</text>
-      <text x="${px-8}" y="${h-py+4}" font-size="11" font-weight="600" fill="var(--t2)" text-anchor="end">${minVal}</text>
+      <!-- Assi X -->
+      <text x="${px}" y="${h-4}" font-size="10" font-family="Inter" font-weight="600" fill="var(--t2)" text-anchor="middle">${lblStart}</text>
+      <text x="${px + (w-px-20)/2}" y="${h-4}" font-size="10" font-family="Inter" font-weight="600" fill="var(--t2)" text-anchor="middle">${lblMid}</text>
+      <text x="${w-20}" y="${h-4}" font-size="10" font-family="Inter" font-weight="600" fill="var(--t2)" text-anchor="middle">${lblEnd}</text>
 
-      <!-- Etichette X -->
-      <text x="${px}" y="${h-4}" font-size="11" font-weight="600" fill="var(--t2)" text-anchor="middle">${lblStart}</text>
-      <text x="${px + (w-px-20)/2}" y="${h-4}" font-size="11" font-weight="600" fill="var(--t2)" text-anchor="middle">${lblMid}</text>
-      <text x="${w-20}" y="${h-4}" font-size="11" font-weight="600" fill="var(--t2)" text-anchor="middle">${lblEnd}</text>
-
-      <!-- Linea -->
-      <path d="${pts}" fill="none" stroke="${lineColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle cx="${lastX}" cy="${lastY}" r="4" fill="${lineColor}" stroke="var(--card)" stroke-width="2"/>
+      <path d="${pts}" fill="none" stroke="${lineColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
-    <div class="info"><span>Min: ${mn}</span><span>Max: ${mx}</span></div>
+    <div class="info">
+      <span>Min: ${mn}</span>
+      <span>Max: ${mx}</span>
+    </div>
   </div>`;
 }
 
-// --- 3. GESTIONE MODAL E CHART.JS ---
+// 3. MODAL
 let currentModalData = null;
 function openModal(name) {
   const data = L[name];
@@ -278,7 +264,7 @@ function openModal(name) {
   const varTot = ((data[1][data[1].length - 1] - data[1][0]) / data[1][0] * 100).toFixed(2);
   const segno = varTot >= 0 ? '+' : '';
   const col = varTot >= 0 ? 'var(--up)' : 'var(--dn)';
-  document.getElementById('modal-sub').innerHTML = `Andamento a 12 mesi · <span style="color:${col};font-weight:700">${segno}${varTot}%</span> da inizio periodo`;
+  document.getElementById('modal-sub').innerHTML = `12M Performance · <span style="color:${col};font-weight:700">${segno}${varTot}%</span>`;
   
   renderModalChart();
   renderModalTable();
@@ -294,10 +280,7 @@ function closeModal() {
   if(myChart) { myChart.destroy(); myChart = null; }
 }
 
-function closeModalOutside(e) {
-  if (e.target === document.getElementById('modal')) closeModal();
-}
-
+function closeModalOutside(e) { if (e.target === document.getElementById('modal')) closeModal(); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 function renderModalChart() {
@@ -306,10 +289,9 @@ function renderModalChart() {
   
   if(myChart) { myChart.destroy(); }
 
-  // Recupera i colori CSS attuali (per light/dark mode)
   const style = getComputedStyle(document.documentElement);
   const textColor = style.getPropertyValue('--t2').trim();
-  const gridColor = style.getPropertyValue('--b').trim();
+  const gridColor = style.getPropertyValue('--grid').trim();
   const upColor = style.getPropertyValue('--up').trim();
   const dnColor = style.getPropertyValue('--dn').trim();
   
@@ -321,33 +303,27 @@ function renderModalChart() {
     data: {
       labels: labels,
       datasets: [{
-        label: currentModalData.name,
         data: prices,
         borderColor: lineColor,
-        backgroundColor: 'transparent',
-        borderWidth: 2.5,
+        borderWidth: 2,
         pointRadius: 0,
-        pointHoverRadius: 6,
+        pointHoverRadius: 5,
         pointHoverBackgroundColor: lineColor,
         pointHoverBorderColor: '#fff',
-        pointHoverBorderWidth: 2,
-        tension: 0.1 // Curva leggermente addolcita
+        tension: 0.1 
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      interaction: {
-        mode: 'index',
-        intersect: false,
-      },
+      interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(30, 41, 59, 0.9)',
-          titleFont: { size: 13, family: '-apple-system, sans-serif' },
-          bodyFont: { size: 15, weight: 'bold', family: '-apple-system, sans-serif' },
-          padding: 12,
+          backgroundColor: 'rgba(15, 23, 42, 0.9)',
+          titleFont: { size: 12, family: 'Inter' },
+          bodyFont: { size: 14, weight: '600', family: 'JetBrains Mono' },
+          padding: 10,
           displayColors: false,
           callbacks: {
             label: function(context) {
@@ -358,28 +334,16 @@ function renderModalChart() {
       },
       scales: {
         x: {
-          grid: {
-            display: false, // Nasconde le linee verticali per pulizia
-            drawBorder: false
-          },
-          ticks: {
-            color: textColor,
-            font: { size: 12, family: '-apple-system, sans-serif', weight: '600' }
-          }
+          grid: { display: false },
+          ticks: { color: textColor, font: { size: 11, family: 'Inter', weight: '600' } }
         },
         y: {
-          position: 'right', // Valori sull'asse destro (stile Bloomberg)
-          grid: {
-            color: gridColor,
-            drawBorder: false,
-            borderDash: [5, 5]
-          },
-          ticks: {
-            color: textColor,
-            font: { size: 12, family: '-apple-system, sans-serif', weight: '600' },
-            callback: function(value) {
-              return value.toLocaleString('it-IT');
-            }
+          position: 'right',
+          grid: { color: gridColor, drawBorder: false, borderDash: [3, 3] },
+          ticks: { 
+            color: textColor, 
+            font: { size: 11, family: 'JetBrains Mono' },
+            callback: function(value) { return value.toLocaleString('it-IT'); }
           }
         }
       }
@@ -400,8 +364,8 @@ function renderModalTable() {
     html += `<tr>
       <td style="font-weight:600">${labels[i]}</td>
       <td>${p.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-      <td class="dt-var" style="color:${col}">${i === 0 ? '—' : sg + diff.toFixed(2)}</td>
-      <td class="dt-var" style="color:${col}">${i === 0 ? '—' : sg + pct + '%'}</td>
+      <td style="color:${col}">${i === 0 ? '—' : sg + diff.toFixed(2)}</td>
+      <td style="color:${col}">${i === 0 ? '—' : sg + pct + '%'}</td>
     </tr>`;
   });
   tbody.innerHTML = html;
@@ -410,20 +374,17 @@ function renderModalTable() {
 async function caricaDati() {
   try {
     const response = await fetch('dati.json');
-    if (!response.ok) throw new Error("Errore di rete");
+    if (!response.ok) throw new Error("Error");
     const data = await response.json();
     
     if (data.timestamp) {
-      document.getElementById("ut").textContent = "Ultimo aggiornamento: " + data.timestamp;
+      document.getElementById("ut").textContent = "Last Update: " + data.timestamp;
     }
     
     D = data.D || {};
     L = data.L || {};
     
-    rd("forex", "g-fx");
-    rd("indices", "g-ix");
-    rd("sectors", "g-sc");
-    rd("macro", "g-mc");
+    rd("forex", "g-fx"); rd("indices", "g-ix"); rd("sectors", "g-sc"); rd("macro", "g-mc");
     
     const lc = document.getElementById("lc");
     lc.innerHTML = ""; 
@@ -431,12 +392,10 @@ async function caricaDati() {
       Object.entries(L).forEach(([name, d], idx) => {
         lc.innerHTML += buildMini(name, d, idx);
       });
-    } else {
-      lc.innerHTML = "<p style='color:var(--t2);font-size:14px'>Dati storici in fase di caricamento.</p>";
     }
   } catch (error) {
-    console.error("Errore:", error);
-    document.getElementById("ut").textContent = "Dati non disponibili";
+    console.error(error);
+    document.getElementById("ut").textContent = "Data Unavailable";
   }
 }
 
